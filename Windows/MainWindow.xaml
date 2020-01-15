@@ -6,6 +6,12 @@
         xmlns:local="clr-namespace:Saper"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="" Name="remainingBombs" />
+            <TextBlock Text="" Name="timer" />
+        </StackPanel>
+        <Grid Name="mapGrid">
+        </Grid>
+    </StackPanel>
 </Window>

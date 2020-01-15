@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MapGenerator and support\Field.cs" />
+    <Compile Include="MapGenerator and support\MapGenerator.cs" />
+    <Compile Include="MapGenerator and support\Point.cs" />
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

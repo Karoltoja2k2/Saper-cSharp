@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,125 +17,6 @@ using System.Windows.Shapes;
 namespace Saper.Windows
 
 {
-    public class Point
-    {
-        public int row;
-        public int col;
-
-        public Point(int row, int col)
-        {
-            this.row = row;
-            this.col = col;
-        }
-
-        public Point Add_Point(Point p2)
-        {
-            return new Point(this.row - p2.row, this.col - p2.col);
-        }
-
-        public bool Inside_Boundries(int rowsParam, int colsParams)
-        {
-            if (row >= 0 && col >= 0 && row < rowsParam && col < colsParams)
-                return true;
-            else
-                return false;
-        }
-    }
-
-    // 
-    //  (0,0) (0,1) (0,2)
-    //  (1,0) (1,1) (1,2)
-    //  (2,0) (2,1) (2,2)
-    //
-
-
-    public class Field
-    {
-        public Point point;
-        public Button btn;
-
-        public bool hidden;
-        public bool flag;
-        public bool bomb;
-        public int nBombs;
-
-
-
-        public Field(Point point, bool bomb = false, int nearBombs = 0)
-        {
-            this.point = point;
-            this.bomb = bomb;
-            this.flag = false;
-            this.hidden = true;
-            this.nBombs = nearBombs;
-        }
-
-    }
-
-    public class MapGenerator
-    {
-        public List<Point> bombCords;
-
-        public int rows;
-        public int columns;
-        public int bombs;
-        public static Point[] offset = new Point[] { new Point(-1, -1), new Point(-1, 0), new Point(-1, +1),
-                                                     new Point( 0, -1),                   new Point( 0, +1),
-                                                     new Point(+1, -1), new Point(+1, 0), new Point(+1, +1)
-                                                   };
-
-        public MapGenerator(int rows, int columns, int bombs)
-        {
-            this.rows = rows;
-            this.columns = columns;
-            this.bombs = bombs;            
-        }
-
-        public Field[,] Generate_Map()
-        {
-            Field[,] map = new Field[rows, columns];
-            List<Point> cordsForBombs = new List<Point>();
-
-            for (int row = 0; row < rows; row++)
-            {
-                for (int column = 0; column < columns; column++)
-                {
-                    Point point = new Point(row, column);
-                    map[row, column] = new Field(point);
-                    cordsForBombs.Add(point);
-                }
-            }
-
-            bombCords = Bomb_Cords_Generator(cordsForBombs);
-            Console.WriteLine(bombCords);
-            foreach (Point pkt in bombCords)
-            {
-                map[pkt.row, pkt.col].bomb = true;
-                foreach(Point offsetPoint in offset)
-                {
-                    Point toAddBomb = pkt.Add_Point(offsetPoint);
-                    if (toAddBomb.row >= 0 && toAddBomb.row < rows && toAddBomb.col >= 0 && toAddBomb.col < columns)
-                        map[toAddBomb.row, toAddBomb.col].nBombs += 1;
-                }
-            }
-
-            return map;
-        }
-
-        public List<Point> Bomb_Cords_Generator(List<Point> cords)
-        {
-            List<Point> chosenBomb = new List<Point>();
-            var random = new Random();
-            int index;
-            for (int b = 0; b < bombs; b++)
-            {
-                index = random.Next(cords.Count);
-                chosenBomb.Add(cords[index]);
-                cords.RemoveAt(index);
-            }
-            return chosenBomb;
-        }
-    }
 
     /// <summary>
     /// Logika interakcji dla klasy MainWindow.xaml
@@ -144,7 +26,15 @@ namespace Saper.Windows
 
         public static Field[,] map;
         System.Diagnostics.Stopwatch watch;
-        MapGenerator mapGenerator;
+        public MapGenerator mapGenerator;
+
+        int rBombs;
+        bool firstClick;
+        bool run;
+
+        public int rows;
+        public int cols;
+        public int bombs;
 
         public Point mouse_Down;
 
@@ -167,51 +57,53 @@ namespace Saper.Windows
             // watch.Stop();
             // var elapsedMs = watch.ElapsedMilliseconds;
             // Console.WriteLine($"end: {elapsedMs}");
+            this.rows = rows;
+            this.cols = col;
+            this.bombs = bombs;
+            rBombs = bombs;
 
+            firstClick = true;
+            this.mapGenerator = new MapGenerator(rows, cols, bombs);
 
-            mapGenerator = new MapGenerator(rows, col, bombs);
-            map = mapGenerator.Generate_Map();
             renderGrid(rows, col);
         }
 
         public void renderGrid(int rows, int cols)
         {
-            Grid grid = new Grid();
+            // Grid grid = new Grid();
+            Grid grid = mapGrid;
+            int squareSize = 30;
 
             for (int i = 0; i < rows; i++)
             {
                 RowDefinition row = new RowDefinition();
-                row.Height = new GridLength(30);
+                row.Height = new GridLength(squareSize);
                 grid.RowDefinitions.Add(row);
 
                 for (int j = 0; j < cols; j++)
                 {
                     ColumnDefinition column = new ColumnDefinition();
-                    column.Width = new GridLength(30);
+                    column.Width = new GridLength(squareSize);
+                    this.Width = cols * squareSize;
+                    this.Height = rows * squareSize;
                     grid.ColumnDefinitions.Add(column);
+                    
+                    mapGenerator.map[i, j].btn.FontSize = 18;
+                    mapGenerator.map[i, j].btn.BorderThickness = new Thickness(1);
+                    mapGenerator.map[i, j].btn.Background = Brushes.DodgerBlue;
+                    mapGenerator.map[i, j].btn.CommandParameter = new Point(i, j);
+                    mapGenerator.map[i, j].btn.PreviewMouseLeftButtonUp += Click_Up;
+                    mapGenerator.map[i, j].btn.PreviewMouseLeftButtonDown += Click_Down;
+                    mapGenerator.map[i, j].btn.MouseRightButtonUp += Click_Up;
+                    mapGenerator.map[i, j].btn.MouseRightButtonDown += Click_Down;
+                    mapGenerator.map[i, j].btn.MouseLeave += Mouse_Leave;
 
-                    Button btn = new Button();
-                    btn.FontSize = 18;
-                    btn.BorderThickness = new Thickness(1);
-                    btn.Background = Brushes.DodgerBlue;
-                    btn.CommandParameter = new Point(i, j);
-                    // btn.MouseDown += Click_Down;
-
-                    btn.PreviewMouseLeftButtonUp += Click_Up;
-                    btn.PreviewMouseLeftButtonDown += Click_Down;
-
-                    btn.MouseRightButtonUp += Click_Up;
-                    btn.MouseRightButtonDown += Click_Down;
-
-                    btn.MouseLeave += Mouse_Leave;
-
-                    Grid.SetColumn(btn, j);
-                    Grid.SetRow(btn, i);
-                    grid.Children.Add(btn);
-                    map[i, j].btn = btn;
+                    Grid.SetColumn(mapGenerator.map[i, j].btn, j);
+                    Grid.SetRow(mapGenerator.map[i, j].btn, i);
+                    grid.Children.Add(mapGenerator.map[i, j].btn);
                 }
             }
-            this.Content = grid;
+            // this.Content = grid;
         }
 
         public void Click_Down(object sender, MouseButtonEventArgs e)
@@ -226,6 +118,34 @@ namespace Saper.Windows
             mouse_Down = null;
         }
 
+        public void WatchThread()
+        {
+            watch = System.Diagnostics.Stopwatch.StartNew();
+            TimeSpan elapsedTime;
+            while (run)
+            {
+                elapsedTime = watch.Elapsed;
+                try
+                {
+                    Dispatcher.Invoke(new Action(() => updateClock(elapsedTime)));
+                }
+                catch
+                {
+                    break;
+                }
+
+                Thread.Sleep(1000);
+                }
+
+            watch.Stop();
+
+        }
+
+        public void updateClock(TimeSpan time)
+        {
+            timer.Text = $"{time.Seconds}";
+        }
+
         public void Click_Up(object sender, MouseButtonEventArgs e)
         {
             Point clickedXY;
@@ -233,11 +153,20 @@ namespace Saper.Windows
                 clickedXY = mouse_Down;
             else
                 return;
+
+            if (firstClick)
+            {
+                run = true;
+                rBombs = bombs;
+                map = mapGenerator.Generate_Map(clickedXY);
+                firstClick = false;
+
+                Thread watchThread = new Thread(WatchThread);
+                watchThread.Start();
+            }
+
             Field clickedField = map[clickedXY.row, clickedXY.col];
 
-            // Button clicked = (Button)sender;
-            // Point clickedXY = (Point)clicked.CommandParameter;
-            // Field clickedField = map[clickedXY.row, clickedXY.col];
 
             if (e.ChangedButton == MouseButton.Left)
                 LMB_Click(clickedField);
@@ -251,7 +180,7 @@ namespace Saper.Windows
         {
             
 
-            if (clickedField.hidden == true)
+            if (clickedField.hidden == true && clickedField.flag == false)
                 LMB_Click_Hidden(clickedField);
             else
                 LMB_Click_Shown(clickedField);
@@ -261,11 +190,15 @@ namespace Saper.Windows
 
         public void RMB_Click(Field clickedField)
         {
-            if (clickedField.hidden == true)
+            if (clickedField.hidden)
             {
+                rBombs += clickedField.flag ? 1 : -1;
+                remainingBombs.Text = $"{rBombs}";
+                
                 clickedField.flag = !clickedField.flag;
                 string txt = clickedField.flag ? "F" : "";
                 clickedField.btn.Content = $"{txt}";
+                clickedField.btn.Foreground = Brushes.Orange;
             }
         }
 
@@ -279,7 +212,11 @@ namespace Saper.Windows
             }
 
             clickedField.btn.Content = clickedField.nBombs == 0 ? "" : $"{clickedField.nBombs}";
+            clickedField.btn.Foreground = Brushes.Black;
+            clickedField.btn.Background = Brushes.LightGray;
+
             clickedField.hidden = false;
+
             if (clickedField.nBombs == 0)
             {
                 foreach (Point offPoint in offset)
@@ -333,11 +270,12 @@ namespace Saper.Windows
             if (success)
             {
                 Start_Game(16,30,99);
+                run = false;
             }
             else
             {
                 Start_Game(16, 30, 99);
-
+                run = false;
             }
 
         }
