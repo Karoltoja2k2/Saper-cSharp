@@ -1,0 +1,43 @@
+﻿<Window x:Class="Saper.Windows.GameOverWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Saper.Windows"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Title="GameOverWindow" Height="250" Width="300">
+
+    <Window.Background>
+        <SolidColorBrush Color="Black" Opacity="0.7"/>
+    </Window.Background>
+
+    <Border BorderBrush="Black" BorderThickness="0" CornerRadius="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="1*"/>
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Name="successBlock" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" FontSize="22" Foreground="White" Text="ASD"/>
+
+            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0,20,0,10" HorizontalAlignment="Left">
+                <TextBlock FontSize="20" Foreground="White" Name="timeBlock" Margin="0,10"/>
+                <TextBlock FontSize="20" Foreground="White" Name="recordBlock" Margin="0,10"/>
+            </StackPanel>
+
+            <Button Content="New game" Style="{DynamicResource menuButton}" Foreground="White" FontSize="22" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Background="Black" Opacity="0.9" Name="continueButton" Click="Close_Window">
+            </Button>
+        </Grid>
+    </Border>
+</Window>

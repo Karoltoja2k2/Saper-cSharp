@@ -34,20 +34,20 @@ namespace Saper.Windows
                 for (int column = 0; column < columns; column++)
                 {
                     Point point = new Point(row, column);
-                    Field field = new Field(point);
-                    field.btn = new Button();
-
-                    map[row, column] = field;
+                    // Field field = new Field(point);
+                    // field.btn = new Button();
+                    // 
+                    // map[row, column] = field;
 
                     cordsForBombs_CONST.Add(point);
                 }
             }
         }
 
-        public Field[,] Generate_Map(Point clickedPoint)
+        public Field[,] Generate_Map(Point clickedPoint, ref Field[,] mapToChange)
         {
             List<Point> cordsForBombs = cordsForBombs_CONST;
-            Field[,] tempMap = map;
+            // Field[,] tempMap = map;
 
 
             cordsForBombs[clickedPoint.row * columns + clickedPoint.col] = new Point(-1, -1);
@@ -63,16 +63,15 @@ namespace Saper.Windows
             bombCords = Bomb_Cords_Generator(cordsForBombs);
             foreach (Point pkt in bombCords)
             {
-                tempMap[pkt.row, pkt.col].bomb = true;
+                mapToChange[pkt.row, pkt.col].bomb = true;
                 foreach(Point offsetPoint in offset)
                 {
                     Point toAddBomb = pkt.Add_Point(offsetPoint);
                     if (toAddBomb.Inside_Boundries(rows, columns))
-                        tempMap[toAddBomb.row, toAddBomb.col].nBombs += 1;
+                        mapToChange[toAddBomb.row, toAddBomb.col].nBombs += 1;
                 }
             }
-
-            return tempMap;
+            return mapToChange;
         }
 
         public bool check(Point p)
