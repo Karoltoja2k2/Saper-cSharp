@@ -13,8 +13,6 @@ namespace Saper.Windows
         public bool bomb;
         public int nBombs;
 
-
-
         public Field(Point point, bool bomb = false, int nearBombs = 0)
         {
             this.point = point;

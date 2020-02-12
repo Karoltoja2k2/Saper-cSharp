@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Saper.MapGenerator_and_support;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.SqlClient;
 
 namespace Saper.Windows
 
@@ -48,11 +52,28 @@ namespace Saper.Windows
         public int cols;
         public int bombs;
 
+        // data catching for ML
+        public List<ClickEvent> clickEvents;
+        static string connetionString = ConfigurationManager.AppSettings["connectionString"];
+        static SqlConnection cnn;
+
+
+
         // const values
         public static Point[] offset = new Point[] { new Point(-1, -1), new Point(-1, 0), new Point(-1, +1),
                                                      new Point( 0, -1),                   new Point( 0, +1),
                                                      new Point(+1, -1), new Point(+1, 0), new Point(+1, +1)
                                                     };
+
+        public static Point[] offset2 = new Point[] {
+                                                     new Point(-2, -2), new Point(-2, -1), new Point(-2, 0), new Point(-2, 1), new Point(-2, 2),
+                                                     new Point(-1, -2), new Point(-1, -1), new Point(-1, 0), new Point(-1, 1), new Point(-1, 2),
+                                                     new Point( 0, -2), new Point( 0, -1),                   new Point( 0, 1), new Point( 0, 2),
+                                                     new Point( 1, -2), new Point( 1, -1), new Point( 1, 0), new Point( 1, 1), new Point( 1, 2),
+                                                     new Point( 2, -2), new Point( 2, -1), new Point( 2, 0), new Point( 2, 1), new Point( 2, 2)
+                                                    };
+
+
         public static Brush[] brushCollection = new Brush[] { Brushes.LightGray, Brushes.DarkCyan, Brushes.Green, Brushes.Red, Brushes.DarkSlateBlue, Brushes.Brown, Brushes.SeaGreen, Brushes.Orange };
 
         public GameWindow()
@@ -60,21 +81,21 @@ namespace Saper.Windows
             // titleBar.MouseLeftButtonDown += (o, e) => DragMove();
             Loaded += Loaded_Event;
             InitializeComponent();
-            
+
         }
 
         private void Drag_Window(object sender, MouseButtonEventArgs e)
-
         {
             this.DragMove();
         }
 
         public void Loaded_Event(object sender, RoutedEventArgs e)
         {
+            cnn = new SqlConnection(connetionString);
+
             SizeChanged += Window_Size_Changed;
             Set_Level(1);
             Start_Game();
-
         }
 
         public void Change_Level(object sender, RoutedEventArgs e)
@@ -128,6 +149,8 @@ namespace Saper.Windows
             timer.Text = "00:00";
             rBombs = bombs;
             shownFields = 0;
+
+            clickEvents = new List<ClickEvent>();
 
             firstClick = true;
             run = false;
@@ -342,18 +365,21 @@ namespace Saper.Windows
             if (e.ChangedButton == MouseButton.Left)
             {
                 if (clickedField.hidden == true && clickedField.flag == false)
+                {
                     LMB_Click_Hidden(clickedField);
+                }
                 else
                     LMB_Click_Shown(clickedField);
             }
             else if (e.ChangedButton == MouseButton.Right)
                 RMB_Click(clickedField);
-
+            
             e.Handled = true;
         }
 
         public void RMB_Click(Field clickedField)
         {
+            Collect_Data(clickedField);
             if (clickedField.hidden)
             {
                 rBombs += clickedField.flag ? 1 : -1;
@@ -361,12 +387,18 @@ namespace Saper.Windows
 
                 clickedField.flag = !clickedField.flag;
                 Brush color = clickedField.flag ? Brushes.Orange : Brushes.DodgerBlue;
-                clickedField.btn.Background = color;        
+                clickedField.btn.Background = color;
             }
         }
 
-        public void LMB_Click_Hidden(Field clickedField)
+
+
+        public void LMB_Click_Hidden(Field clickedField, bool recursion = false)
         {
+            if (!recursion && clickedField.nBombs != 0)
+            {
+                Collect_Data(clickedField);
+            }
 
             if (clickedField.bomb)
             {
@@ -381,6 +413,7 @@ namespace Saper.Windows
             clickedField.hidden = false;
             shownFields += 1;
 
+
             if (clickedField.nBombs == 0)
             {
                 foreach (Point offPoint in offset)
@@ -391,7 +424,7 @@ namespace Saper.Windows
                         Field tempField = map[tempPoint.row, tempPoint.col];
                         if (tempField.hidden == true && tempField.flag == false)
                         {
-                            LMB_Click_Hidden(tempField);
+                            LMB_Click_Hidden(tempField, true);
                         }
                     }
                 }
@@ -434,11 +467,82 @@ namespace Saper.Windows
             }
         }
 
+        public void Collect_Data(Field clickedField)
+        {
+            Nullable<int>[] nFields = new Nullable<int>[24];
+            int count = 0;
+            int number;
+            foreach (Point offPoint in offset2)
+            {
+                Point tempPoint = clickedField.point.Add_Point(offPoint);
+                if (tempPoint.Inside_Boundries(rows, cols))
+                {
+                    Field threadedField = map[tempPoint.row, tempPoint.col];
+                    if (threadedField.hidden)
+                        number = 9;
+                    else if (threadedField.flag)
+                        number = 10;
+                    else
+                        number = threadedField.nBombs;
+                    nFields[count] = number;
+                }
+                else
+                {
+                    nFields[count] = null;
+                }
+                count++;
+            }
+            bool bomb = clickedField.bomb;
+            ClickEvent clc = new ClickEvent(bomb, nFields);
+            clickEvents.Add(clc);
+        }
 
+        public void Save_ML_Data(List<ClickEvent> clickEvents)
+        {
+            cnn.Open();
+            string q;
+            SqlCommand cmd;
+            foreach(ClickEvent click in clickEvents)
+            {
+                q = @"INSERT INTO ML_data(isBomb, LLUU, LUU, UU, RUU, RRUU, LLU, LU, U, RU, RRU, LL, L, R, RR, LLD, LD, D, RD, RRD, LLDD, LDD, DD, RDD, RRDD)
+                      VALUES (@isBomb, @LLUU, @LUU, @UU, @RUU, @RRUU, @LLU, @LU, @U, @RU, @RRU, @LL, @L, @R, @RR, @LLD, @LD, @D, @RD, @RRD, @LLDD, @LDD, @DD, @RDD, @RRDD)";
+                cmd = new SqlCommand(q, cnn);
+                cmd.Parameters.AddWithValue("isBomb", click.bomb ? 1 : 0);
+                cmd.Parameters.AddWithValue("LLUU", (object)click.n[0]  ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LUU",  (object)click.n[1]  ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("UU"  , (object)click.n[2]  ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RUU",  (object)click.n[3]  ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("RRUU", (object)click.n[4]  ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LLU",  (object)click.n[5]  ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("LU" ,  (object)click.n[6]  ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("U"   , (object)click.n[7]  ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RU" ,  (object)click.n[8]  ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("RRU",  (object)click.n[9]  ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("LL"  , (object)click.n[10] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("L"   , (object)click.n[11] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("R"   , (object)click.n[12] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RR"  , (object)click.n[13] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LLD",  (object)click.n[14] ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("LD" ,  (object)click.n[15] ?? DBNull.Value );
+                cmd.Parameters.AddWithValue("D"   , (object)click.n[16] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RD" ,  (object)click.n[17] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RRD",  (object)click.n[18] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LLDD", (object)click.n[19] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LDD",  (object)click.n[20] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("DD"  , (object)click.n[21] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RDD",  (object)click.n[22] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RRDD", (object)click.n[23] ?? DBNull.Value);
+
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
+            cnn.Close();
+        }
 
         public void endGame(bool success)
         {
             run = false;
+            Save_ML_Data(clickEvents);
 
             GameOverWindow endWin = new GameOverWindow();
 

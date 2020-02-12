@@ -14,7 +14,7 @@
 
         public Point Add_Point(Point p2)
         {
-            return new Point(this.row - p2.row, this.col - p2.col);
+            return new Point(this.row + p2.row, this.col + p2.col);
         }
 
         public bool Inside_Boundries(int rowsParam, int colsParams)
