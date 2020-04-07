@@ -18,6 +18,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
 
+using System.Net.Http;
+using System.Net;
+using Saper.ApiAccess;
+
 namespace Saper.Windows
 
 {
@@ -42,7 +46,7 @@ namespace Saper.Windows
 
         // gameplay atributes
         public System.Diagnostics.Stopwatch watch;
-        int level;
+        int level = 1;
         int rBombs;
         int shownFields;
         bool firstClick;
@@ -57,6 +61,9 @@ namespace Saper.Windows
         static string connetionString = ConfigurationManager.AppSettings["connectionString"];
         static SqlConnection cnn;
 
+        public static RankRecord[] rankArray = new RankRecord[0];
+        public static ApiRequests apiRequests = new ApiRequests();
+        private float totalTimeSec;
 
 
         // const values
@@ -74,14 +81,14 @@ namespace Saper.Windows
                                                     };
 
 
-        public static Brush[] brushCollection = new Brush[] { Brushes.LightGray, Brushes.DarkCyan, Brushes.Green, Brushes.Red, Brushes.DarkSlateBlue, Brushes.Brown, Brushes.SeaGreen, Brushes.Orange };
+        public static Brush[] brushCollection = new Brush[] { Brushes.LightGray, Brushes.DarkCyan, Brushes.Green, Brushes.Red, Brushes.DarkSlateBlue, Brushes.Brown, Brushes.SeaGreen, Brushes.Orange, Brushes.Black };
 
         public GameWindow()
         {
             // titleBar.MouseLeftButtonDown += (o, e) => DragMove();
+            App.Current.MainWindow = this;
             Loaded += Loaded_Event;
             InitializeComponent();
-
         }
 
         private void Drag_Window(object sender, MouseButtonEventArgs e)
@@ -94,7 +101,7 @@ namespace Saper.Windows
             cnn = new SqlConnection(connetionString);
 
             SizeChanged += Window_Size_Changed;
-            Set_Level(1);
+            Set_Level(level);
             Start_Game();
         }
 
@@ -327,6 +334,8 @@ namespace Saper.Windows
 
         #endregion
 
+        #region click methods
+
         public void Click_Down(object sender, MouseButtonEventArgs e)
         {
             Button clicked = (Button)sender;
@@ -379,7 +388,8 @@ namespace Saper.Windows
 
         public void RMB_Click(Field clickedField)
         {
-            Collect_Data(clickedField);
+            // COLLECTING DATA FOR ML
+            // Collect_Data(clickedField);
             if (clickedField.hidden)
             {
                 rBombs += clickedField.flag ? 1 : -1;
@@ -391,14 +401,13 @@ namespace Saper.Windows
             }
         }
 
-
-
         public void LMB_Click_Hidden(Field clickedField, bool recursion = false)
         {
-            if (!recursion && clickedField.nBombs != 0)
-            {
-                Collect_Data(clickedField);
-            }
+            // COLLECTING DATA FOR ML
+            // if (!recursion && clickedField.nBombs != 0)
+            // {
+            //     Collect_Data(clickedField);
+            // }
 
             if (clickedField.bomb)
             {
@@ -466,6 +475,10 @@ namespace Saper.Windows
                 }
             }
         }
+
+        #endregion
+
+        #region ML stuff
 
         public void Collect_Data(Field clickedField)
         {
@@ -539,19 +552,21 @@ namespace Saper.Windows
             cnn.Close();
         }
 
-        public void endGame(bool success)
+        #endregion
+
+        public async Task endGame(bool success)
         {
             run = false;
-            Save_ML_Data(clickEvents);
+            // DATA FOR ML, ONLY WHEN CONN TO MY LOCAL DB
+            // Save_ML_Data(clickEvents);
 
             GameOverWindow endWin = new GameOverWindow();
+            endWin.Owner = this;
 
             // int height = (int)this.ActualHeight / 2;
             // int Width = (int)this.ActualWidth / 2;
             // endWin.Height = height;
             // endWin.Width = Width;
-            endWin.Owner = this;
-
 
             if (success)
             {
@@ -567,9 +582,34 @@ namespace Saper.Windows
             }
             endWin.ShowDialog();
             Start_Game();
-
+            if (success)
+            {
+                bool send = await apiRequests.Post_RankRecord("testAuto", totalTimeSec, level);
+                if (!send)
+                {
+                    Connection_Error();
+                }
+            }
         }
 
+        public void Connection_Error()
+        {
+        }
+
+        public void Show_Rank(object sender, RoutedEventArgs e) => Open_Rank_Win();
+        async Task Open_Rank_Win()
+        {
+            rankArray = await apiRequests.Get_Ranking();
+            if (rankArray == null || rankArray.Length == 0)
+            {
+                Connection_Error();
+                return;
+            }
+            RankWindow rankWin = new RankWindow(rankArray);
+            rankWin.Owner = this;
+
+            rankWin.ShowDialog();
+        }
 
         public void WatchThread()
         {
@@ -600,6 +640,8 @@ namespace Saper.Windows
             string strMin;
             string strSec;
 
+            totalTimeSec = min * 60 + sec;
+
             strMin = min < 10 ? $"0{min}" : $"{min}";
             strSec = sec < 10 ? $"0{sec}" : $"{sec}";
 
@@ -628,10 +670,6 @@ namespace Saper.Windows
         {
             int containerHeight = (int)gridContainer.ActualHeight;
             int containerWidth = (int)gridContainer.ActualWidth;
-
-            // int windowH = (int)this.ActualHeight - 50;
-            // int windowW = (int)this.ActualWidth - 50;
-
 
             vertical = containerHeight > 1.2 * containerWidth ? true : false;
 

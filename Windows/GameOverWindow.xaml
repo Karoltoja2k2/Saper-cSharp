@@ -9,7 +9,7 @@
         AllowsTransparency="True"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Title="GameOverWindow" Height="250" Width="300">
+        Title="Game over" Height="250" Width="300">
 
     <Window.Background>
         <SolidColorBrush Color="Black" Opacity="0.7"/>

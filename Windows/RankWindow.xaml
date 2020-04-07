@@ -1,0 +1,40 @@
+﻿<Window x:Class="Saper.Windows.RankWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Saper.Windows"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Title="Rank" Height="400" Width="500">
+    <Window.Background>
+        <SolidColorBrush Color="Black" Opacity="0.7"/>
+    </Window.Background>
+    <Border BorderBrush="Black" BorderThickness="0" CornerRadius="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="8*"/>
+
+
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0" LastChildFill="False">
+                <Button Click="Change_Cart" CommandParameter="1" Content="Easy  " Margin="5" Width="70" DockPanel.Dock="Left"/>
+                <Button Click="Change_Cart" CommandParameter="2" Content="Medium" Margin="5" Width="70" DockPanel.Dock="Left"/>
+                <Button Click="Change_Cart" CommandParameter="3" Content="Expert" Margin="5" Width="70" DockPanel.Dock="Left"/>
+                <Button Click="Close_Window" Content="Exit" Margin="5" Width="70" DockPanel.Dock="Right"></Button>
+            </DockPanel>
+
+            <StackPanel Grid.Row="1" Name="easyPanel">                
+            </StackPanel>
+            <StackPanel Width="0" Grid.Row="1" Name="mediumPanel">
+            </StackPanel>
+            <StackPanel Width="0" Grid.Row="1" Name="expertPanel">
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

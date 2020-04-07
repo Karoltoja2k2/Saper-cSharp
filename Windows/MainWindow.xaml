@@ -40,6 +40,11 @@
                 <TextBlock Text="" Width="50" VerticalAlignment="Center" Foreground="White" FontSize="16" DockPanel.Dock="Left" Margin="5" Name="remainingBombs"  />
                 <Image Source="../Resources/clock2.png" DockPanel.Dock="Left" Margin="5,7,0,7"/>
                 <TextBlock Text="00:00" Width="50" VerticalAlignment="Center" Foreground="White" FontSize="16" DockPanel.Dock="Left" Margin="5" Name="timer" />
+                <Button Background="Transparent" BorderThickness="0" Margin="5,7,0,7" Click="Show_Rank">
+                    <Image Source="../Resources/rank.png" DockPanel.Dock="Left"/>
+                </Button>
+                <TextBox Name="asd" Text="00:00" Width="50" VerticalAlignment="Center" Foreground="Black" FontSize="16" DockPanel.Dock="Left" Margin="5" />
+
                 <Button Style="{DynamicResource titleBarButton}" Background="Transparent" BorderThickness="0" FontSize="35" Height="40" Width="30" Foreground="White"  Click="Close_Game_Window" DockPanel.Dock="Right" Content="X" Margin="5,5" VerticalAlignment="Center"/>
 
                 <Button Style="{DynamicResource titleBarButton}" Background="Transparent" BorderThickness="0" FontSize="35" Height="40" Width="30" Foreground="White" Click="Minimize_Game_Window" DockPanel.Dock="Right" Content="_" Margin="5,5" VerticalAlignment="Center"/>
