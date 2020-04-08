@@ -65,6 +65,10 @@ namespace Saper.Windows
         public static ApiRequests apiRequests = new ApiRequests();
         private float totalTimeSec;
 
+        public LoginWin logWin;
+        public RankWindow rankWin;
+        public GameOverWindow endWin;
+
 
         // const values
         public static Point[] offset = new Point[] { new Point(-1, -1), new Point(-1, 0), new Point(-1, +1),
@@ -411,7 +415,7 @@ namespace Saper.Windows
 
             if (clickedField.bomb)
             {
-                endGame(false);
+                Game_OVer(false);
                 return;
             }
 
@@ -441,7 +445,7 @@ namespace Saper.Windows
 
             if (shownFields == cols * rows - bombs)
             {
-                endGame(true);
+                Game_OVer(true);
             }
         }
 
@@ -554,13 +558,13 @@ namespace Saper.Windows
 
         #endregion
 
-        public async Task endGame(bool success)
+        public async Task Game_OVer(bool success)
         {
             run = false;
             // DATA FOR ML, ONLY WHEN CONN TO MY LOCAL DB
             // Save_ML_Data(clickEvents);
 
-            GameOverWindow endWin = new GameOverWindow();
+            endWin = new GameOverWindow();
             endWin.Owner = this;
 
             // int height = (int)this.ActualHeight / 2;
@@ -596,6 +600,14 @@ namespace Saper.Windows
         {
         }
 
+        public void Show_LoginWin(object sender, RoutedEventArgs e)
+        {
+            logWin = new LoginWin();
+            logWin.Owner = this;
+            logWin.ShowDialog();
+            Connection_Error();
+        }
+
         public void Show_Rank(object sender, RoutedEventArgs e) => Open_Rank_Win();
         async Task Open_Rank_Win()
         {
@@ -605,9 +617,8 @@ namespace Saper.Windows
                 Connection_Error();
                 return;
             }
-            RankWindow rankWin = new RankWindow(rankArray);
+            rankWin = new RankWindow(rankArray);
             rankWin.Owner = this;
-
             rankWin.ShowDialog();
         }
 
@@ -656,6 +667,20 @@ namespace Saper.Windows
         private void Minimize_Game_Window(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
+        }
+
+        private bool fullscreen = false;
+        private void Maximize_Win(object sender, RoutedEventArgs e)
+        {
+            if (!fullscreen)
+            {
+                this.WindowState = WindowState.Maximized;
+            }
+            else if (fullscreen)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+            fullscreen = !fullscreen;
         }
 
 

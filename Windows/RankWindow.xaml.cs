@@ -50,8 +50,12 @@ namespace Saper.Windows
         {
             Button btn = (Button)sender;
             int chosen = Int32.Parse((string)btn.CommandParameter);
+            easyBtn.Foreground = Brushes.White;
+            mediumBtn.Foreground = Brushes.White;
+            expertBtn.Foreground = Brushes.White;
+            btn.Foreground = Brushes.DarkRed;
 
-            if(chosen == 1)
+            if (chosen == 1)
             {
                 easyPanel.Width = Double.NaN;
                 mediumPanel.Width = 0;
@@ -74,6 +78,11 @@ namespace Saper.Windows
         private void Close_Window(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void Drag_Window(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
     }
 }

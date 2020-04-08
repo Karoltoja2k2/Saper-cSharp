@@ -15,14 +15,29 @@ using System.Windows.Shapes;
 namespace Saper.Windows
 {
     /// <summary>
-    /// Logika interakcji dla klasy GameOverWindow.xaml
+    /// Logika interakcji dla klasy Window1.xaml
     /// </summary>
-    public partial class GameOverWindow : Window
+    public partial class LoginWin : Window
     {
-        public GameOverWindow()
+        public LoginWin()
         {
             InitializeComponent();
         }
+
+        private void Register_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Login_Click(object sender, RoutedEventArgs e)
+        {
+            string nickname = nickNameLoginBox.Text;
+            string password = paswordLoginBox.Password;
+            bool? remember = rememberBtn.IsChecked;
+
+
+        }
+
 
         private void Close_Window(object sender, RoutedEventArgs e)
         {

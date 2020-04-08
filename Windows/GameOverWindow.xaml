@@ -9,6 +9,7 @@
         AllowsTransparency="True"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
+        MouseLeftButtonDown="Drag_Window"
         Title="Game over" Height="250" Width="300">
 
     <Window.Background>
@@ -17,12 +18,7 @@
 
     <Border BorderBrush="Black" BorderThickness="0" CornerRadius="10">
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="10*"/>
-                <ColumnDefinition Width="1*"/>
 
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="4*"/>
@@ -36,7 +32,7 @@
                 <TextBlock FontSize="20" Foreground="White" Name="recordBlock" Margin="0,10"/>
             </StackPanel>
 
-            <Button Content="New game" Style="{DynamicResource menuButton}" Foreground="White" FontSize="22" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Background="Black" Opacity="0.9" Name="continueButton" Click="Close_Window">
+            <Button Style="{DynamicResource menuButton}" Height="20" Margin="5" Background="White" Opacity="0.9" Grid.Row="2" VerticalAlignment="Bottom" Name="continueButton" Click="Close_Window">
             </Button>
         </Grid>
     </Border>

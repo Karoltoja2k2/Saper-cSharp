@@ -1,0 +1,55 @@
+﻿<Window x:Class="Saper.Windows.LoginWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Saper.Windows"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        FontSize="20"
+        FontFamily="Roboto"
+        WindowStartupLocation="CenterOwner"   
+        MouseLeftButtonDown="Drag_Window"
+        Title="Account" Height="400" Width="500">
+    <Window.Background>
+        <SolidColorBrush Color="Black" Opacity="0.7"/>
+    </Window.Background>
+    <Border BorderThickness="0" CornerRadius="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Foreground="White" Text="Login"    Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Grid.Row="1">
+                <Label       Margin="10,5,0,0" Foreground="White" Content="Username" />
+                <TextBox     Margin="5" Name="nickNameLoginBox" Width="200" />
+                <Label       Margin="10,5,0,0" Foreground="White" Content="Password" />
+                <PasswordBox Margin="5" Name="paswordLoginBox"  Width="200" />
+                <CheckBox    Margin="10,5,0,0" Name="rememberBtn" Foreground="White" Content="Remember me"/>
+                <Button      Margin="5,20" Content="Login" Click="Login_Click"/>
+            </StackPanel>
+
+            <TextBlock Foreground="White" Text="Register" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="1">
+                <Label       Margin="10,5,0,0" Foreground="White" Content="Username" />
+                <TextBox     Margin="5" Name="nickNameRegiserBox" Width="200" />
+                <Label       Margin="10,5,0,0" Foreground="White" Content="Email" />
+                <TextBox     Margin="5" Name="emailRegisterBox"  Width="200" />                
+                <Label       Margin="10,5,0,0" Foreground="White" Content="Password" />
+                <PasswordBox Margin="5" Name="paswordRegisterbox"  Width="200" />
+                <Button      Margin="5,20" Content="Continue" Click="Register_Click" />
+            </StackPanel>
+
+            <Button Grid.Row="1" Grid.ColumnSpan="2" Height="20" Margin="5"  VerticalAlignment="Bottom"  Click="Close_Window"/>
+
+        </Grid>
+    </Border>
+</Window>

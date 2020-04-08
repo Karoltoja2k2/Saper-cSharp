@@ -17,7 +17,7 @@ namespace Saper.ApiAccess
         {
             RankRecord newRecord = new RankRecord(NickName, Time, Level);
 
-            var url = "https://localhost:44361/api/rank";
+            var url = "https://localhost:44358/api/rank";
             HttpResponseMessage httpResponse = await client.PostAsJsonAsync<RankRecord>(url, newRecord);
             try { httpResponse.EnsureSuccessStatusCode(); }
             catch { return false; }
@@ -28,7 +28,7 @@ namespace Saper.ApiAccess
         public async Task<RankRecord[]> Get_Ranking()
         {
             RankRecord[] rankArray;
-            var url = "https://localhost:44361/api/rank";
+            var url = "https://localhost:44358/api/rank";
             HttpResponseMessage httpResponse = await client.GetAsync(url);
 
             if (httpResponse.StatusCode == HttpStatusCode.OK)
@@ -41,5 +41,12 @@ namespace Saper.ApiAccess
             }
             else { return null; }
         }
+
+        public async Task<RankRecord[]> Login(string nickName, string password)
+        {
+
+        }
+
+
     }
 }

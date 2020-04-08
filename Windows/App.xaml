@@ -66,7 +66,7 @@
                                     <Setter TargetName="button"  Property="Background" Value="LightGray"/>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="button" Property="Background" Value="Transparent" />
+                                    <Setter TargetName="button" Property="Opacity" Value="0.6" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
