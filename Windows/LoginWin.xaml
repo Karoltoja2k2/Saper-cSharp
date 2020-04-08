@@ -32,9 +32,10 @@
                 <Label       Margin="10,5,0,0" Foreground="White" Content="Username" />
                 <TextBox     Margin="5" Name="nickNameLoginBox" Width="200" />
                 <Label       Margin="10,5,0,0" Foreground="White" Content="Password" />
-                <PasswordBox Margin="5" Name="paswordLoginBox"  Width="200" />
+                <PasswordBox Margin="5" Name="passwordLoginBox"  Width="200" />
                 <CheckBox    Margin="10,5,0,0" Name="rememberBtn" Foreground="White" Content="Remember me"/>
                 <Button      Margin="5,20" Content="Login" Click="Login_Click"/>
+                <TextBlock Name="test" Text="asd" Foreground="White"/>
             </StackPanel>
 
             <TextBlock Foreground="White" Text="Register" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -44,7 +45,7 @@
                 <Label       Margin="10,5,0,0" Foreground="White" Content="Email" />
                 <TextBox     Margin="5" Name="emailRegisterBox"  Width="200" />                
                 <Label       Margin="10,5,0,0" Foreground="White" Content="Password" />
-                <PasswordBox Margin="5" Name="paswordRegisterbox"  Width="200" />
+                <PasswordBox Margin="5" Name="passwordRegisterbox"  Width="200" />
                 <Button      Margin="5,20" Content="Continue" Click="Register_Click" />
             </StackPanel>
 

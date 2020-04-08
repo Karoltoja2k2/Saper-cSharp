@@ -34,5 +34,53 @@ namespace Saper.Properties {
                 this["NickName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Id {
+            get {
+                return ((int)(this["Id"]));
+            }
+            set {
+                this["Id"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Token {
+            get {
+                return ((string)(this["Token"]));
+            }
+            set {
+                this["Token"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool remember {
+            get {
+                return ((bool)(this["remember"]));
+            }
+            set {
+                this["remember"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool logged {
+            get {
+                return ((bool)(this["logged"]));
+            }
+            set {
+                this["logged"] = value;
+            }
+        }
     }
 }

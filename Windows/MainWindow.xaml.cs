@@ -62,12 +62,13 @@ namespace Saper.Windows
         static SqlConnection cnn;
 
         public static RankRecord[] rankArray = new RankRecord[0];
-        public static ApiRequests apiRequests = new ApiRequests();
         private float totalTimeSec;
+        private UserAuthenticated user;
 
         public LoginWin logWin;
         public RankWindow rankWin;
         public GameOverWindow endWin;
+        public ProfileWindow profWin;
 
 
         // const values
@@ -103,7 +104,10 @@ namespace Saper.Windows
         public void Loaded_Event(object sender, RoutedEventArgs e)
         {
             cnn = new SqlConnection(connetionString);
-
+            if (Properties.Settings.Default.logged)
+            {
+                user = new UserAuthenticated(Properties.Settings.Default.Id, Properties.Settings.Default.NickName, Properties.Settings.Default.Token);
+            }
             SizeChanged += Window_Size_Changed;
             Set_Level(level);
             Start_Game();
@@ -386,7 +390,7 @@ namespace Saper.Windows
             }
             else if (e.ChangedButton == MouseButton.Right)
                 RMB_Click(clickedField);
-            
+
             e.Handled = true;
         }
 
@@ -519,35 +523,35 @@ namespace Saper.Windows
             cnn.Open();
             string q;
             SqlCommand cmd;
-            foreach(ClickEvent click in clickEvents)
+            foreach (ClickEvent click in clickEvents)
             {
                 q = @"INSERT INTO ML_data(isBomb, LLUU, LUU, UU, RUU, RRUU, LLU, LU, U, RU, RRU, LL, L, R, RR, LLD, LD, D, RD, RRD, LLDD, LDD, DD, RDD, RRDD)
                       VALUES (@isBomb, @LLUU, @LUU, @UU, @RUU, @RRUU, @LLU, @LU, @U, @RU, @RRU, @LL, @L, @R, @RR, @LLD, @LD, @D, @RD, @RRD, @LLDD, @LDD, @DD, @RDD, @RRDD)";
                 cmd = new SqlCommand(q, cnn);
                 cmd.Parameters.AddWithValue("isBomb", click.bomb ? 1 : 0);
-                cmd.Parameters.AddWithValue("LLUU", (object)click.n[0]  ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("LUU",  (object)click.n[1]  ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("UU"  , (object)click.n[2]  ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("RUU",  (object)click.n[3]  ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("RRUU", (object)click.n[4]  ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("LLU",  (object)click.n[5]  ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("LU" ,  (object)click.n[6]  ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("U"   , (object)click.n[7]  ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("RU" ,  (object)click.n[8]  ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("RRU",  (object)click.n[9]  ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("LL"  , (object)click.n[10] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("L"   , (object)click.n[11] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("R"   , (object)click.n[12] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("RR"  , (object)click.n[13] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("LLD",  (object)click.n[14] ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("LD" ,  (object)click.n[15] ?? DBNull.Value );
-                cmd.Parameters.AddWithValue("D"   , (object)click.n[16] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("RD" ,  (object)click.n[17] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("RRD",  (object)click.n[18] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LLUU", (object)click.n[0] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LUU", (object)click.n[1] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("UU", (object)click.n[2] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RUU", (object)click.n[3] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RRUU", (object)click.n[4] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LLU", (object)click.n[5] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LU", (object)click.n[6] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("U", (object)click.n[7] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RU", (object)click.n[8] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RRU", (object)click.n[9] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LL", (object)click.n[10] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("L", (object)click.n[11] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("R", (object)click.n[12] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RR", (object)click.n[13] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LLD", (object)click.n[14] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LD", (object)click.n[15] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("D", (object)click.n[16] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RD", (object)click.n[17] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RRD", (object)click.n[18] ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("LLDD", (object)click.n[19] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("LDD",  (object)click.n[20] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("DD"  , (object)click.n[21] ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("RDD",  (object)click.n[22] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("LDD", (object)click.n[20] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("DD", (object)click.n[21] ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("RDD", (object)click.n[22] ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("RRDD", (object)click.n[23] ?? DBNull.Value);
 
                 cmd.ExecuteNonQuery();
@@ -586,9 +590,9 @@ namespace Saper.Windows
             }
             endWin.ShowDialog();
             Start_Game();
-            if (success)
+            if (success && Properties.Settings.Default.logged)
             {
-                bool send = await apiRequests.Post_RankRecord("testAuto", totalTimeSec, level);
+                bool send = await ApiRequests.Post_RankRecord(user, totalTimeSec, level);
                 if (!send)
                 {
                     Connection_Error();
@@ -602,16 +606,27 @@ namespace Saper.Windows
 
         public void Show_LoginWin(object sender, RoutedEventArgs e)
         {
-            logWin = new LoginWin();
-            logWin.Owner = this;
-            logWin.ShowDialog();
-            Connection_Error();
+            if (Properties.Settings.Default.logged)
+            {
+                profWin = new ProfileWindow();
+                profWin.Owner = this;
+                profWin.ShowDialog();
+            }
+            else
+            {
+                logWin = new LoginWin();
+                logWin.Owner = this;
+                logWin.ShowDialog();
+                if (Properties.Settings.Default.logged)
+                {
+                    user = new UserAuthenticated(Properties.Settings.Default.Id, Properties.Settings.Default.NickName, Properties.Settings.Default.Token);
+                }
+            }
         }
 
-        public void Show_Rank(object sender, RoutedEventArgs e) => Open_Rank_Win();
-        async Task Open_Rank_Win()
+        public async void Show_Rank(object sender, RoutedEventArgs e)
         {
-            rankArray = await apiRequests.Get_Ranking();
+            rankArray = await ApiRequests.Get_Ranking();
             if (rankArray == null || rankArray.Length == 0)
             {
                 Connection_Error();
@@ -735,6 +750,10 @@ namespace Saper.Windows
             return size;
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine(Properties.Settings.Default);
+        }
     }
 
 

@@ -13,9 +13,9 @@ namespace Saper.ApiAccess
 
         public static readonly HttpClient client = HttpClientFactory.Create();
 
-        public async Task<bool> Post_RankRecord(string NickName, float Time, int Level)
+        public static async Task<bool> Post_RankRecord(UserAuthenticated user, float Time, int Level)
         {
-            RankRecord newRecord = new RankRecord(NickName, Time, Level);
+            RankRecord newRecord = new RankRecord(user, Time, Level);
 
             var url = "https://localhost:44358/api/rank";
             HttpResponseMessage httpResponse = await client.PostAsJsonAsync<RankRecord>(url, newRecord);
@@ -25,11 +25,13 @@ namespace Saper.ApiAccess
             return true;
         }
 
-        public async Task<RankRecord[]> Get_Ranking()
+        public static async Task<RankRecord[]> Get_Ranking()
         {
             RankRecord[] rankArray;
             var url = "https://localhost:44358/api/rank";
-            HttpResponseMessage httpResponse = await client.GetAsync(url);
+            HttpResponseMessage httpResponse;
+            try { httpResponse = await client.GetAsync(url); }
+            catch { return null; }
 
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
@@ -42,11 +44,18 @@ namespace Saper.ApiAccess
             else { return null; }
         }
 
-        // public async Task<RankRecord[]> Login(string nickName, string password)
-        // {
-        // 
-        // }
+        public static async Task<HttpResponseMessage> Login(LoginForm loginForm)
+        {
+            var url = "https://localhost:44358/api/Account/login";
+            try { return await client.PostAsJsonAsync<LoginForm>(url, loginForm); }
+            catch { return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable); }            
+        }
 
-
+        public static async Task<HttpResponseMessage> Register(RegisterForm registerForm)
+        {
+            var url = "https://localhost:44358/api/Account/register";
+            try { return await client.PostAsJsonAsync<RegisterForm>(url, registerForm); }
+            catch { return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable); }
+        }
     }
 }
