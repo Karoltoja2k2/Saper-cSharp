@@ -670,19 +670,21 @@ namespace Saper.Windows
         }
 
         private bool fullscreen = false;
-        private void Maximize_Win(object sender, RoutedEventArgs e)
+        private void Maximize_Win(object sender, MouseButtonEventArgs e)
         {
-            if (!fullscreen)
+            if (e.ChangedButton != MouseButton.Right)
             {
-                this.WindowState = WindowState.Maximized;
+                if (!fullscreen)
+                {
+                    this.WindowState = WindowState.Maximized;
+                }
+                else if (fullscreen)
+                {
+                    this.WindowState = WindowState.Normal;
+                }
+                fullscreen = !fullscreen;
             }
-            else if (fullscreen)
-            {
-                this.WindowState = WindowState.Normal;
-            }
-            fullscreen = !fullscreen;
         }
-
 
         private void Window_Size_Changed(object sender, SizeChangedEventArgs e)
         {

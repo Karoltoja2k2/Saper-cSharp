@@ -42,10 +42,10 @@ namespace Saper.ApiAccess
             else { return null; }
         }
 
-        public async Task<RankRecord[]> Login(string nickName, string password)
-        {
-
-        }
+        // public async Task<RankRecord[]> Login(string nickName, string password)
+        // {
+        // 
+        // }
 
 
     }

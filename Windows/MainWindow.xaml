@@ -8,6 +8,7 @@
         WindowStyle="None" ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
         Background="Transparent"
+        MouseDoubleClick="Maximize_Win"
         Title="MainWindow" Height="500" Width="1000" MinWidth="500" MinHeight="400">
 
     <Grid Margin="0,0,0,0" Background="LightBlue">
@@ -25,7 +26,7 @@
 
         <DockPanel Grid.Row="0">
 
-            <DockPanel DockPanel.Dock="Top" MouseDoubleClick="Maximize_Win" MouseLeftButtonDown="Drag_Window" LastChildFill="False" Grid.Row="0" Name="titleBar"
+            <DockPanel DockPanel.Dock="Top" MouseLeftButtonDown="Drag_Window" LastChildFill="False" Grid.Row="0" Name="titleBar"
                            Height="50"
                            Background="#126748">
                 <TextBlock Padding="8"
