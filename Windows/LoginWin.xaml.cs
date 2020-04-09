@@ -39,17 +39,22 @@ namespace Saper.Windows
             if (!valid) { return; }
 
             HttpResponseMessage httpResponse = await ApiRequests.Register(registerForm);
-            string msgResponse = await httpResponse.Content.ReadAsStringAsync();
-            try
+            string msgResponse;
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                httpResponse.EnsureSuccessStatusCode();
+                msgResponse = await httpResponse.Content.ReadAsStringAsync();
                 Finish_Registration(msgResponse);
             }
-            catch
+            else if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
             {
+                msgResponse = await httpResponse.Content.ReadAsStringAsync();
                 Process_Error(msgResponse);
             }
-
+            else
+            {
+                msgResponse = "There is problem with server connection. Try again later.";
+                Process_Error(msgResponse);
+            }
         }
 
         private void Finish_Registration(string msg)
@@ -114,16 +119,22 @@ namespace Saper.Windows
             LoginForm loginForm = new LoginForm(nickname, password);
 
             HttpResponseMessage httpResponse = await ApiRequests.Login(loginForm);
+
             if(httpResponse.StatusCode == HttpStatusCode.OK)
             {
                 UserAuthenticated user = await httpResponse.Content.ReadAsAsync<UserAuthenticated>();
                 Finish_Login(user, remember);
             }
-            else
+            else if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
             {
                 nickNameLoginBox.BorderBrush = Brushes.Red;
                 passwordLoginBox.BorderBrush = Brushes.Red;
                 string msgResponse = await httpResponse.Content.ReadAsStringAsync();
+                Process_Error(msgResponse);
+            }
+            else
+            {
+                string msgResponse = "There is problem with server connection. Try again later.";
                 Process_Error(msgResponse);
             }
         }

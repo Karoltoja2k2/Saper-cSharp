@@ -68,7 +68,6 @@ namespace Saper.Windows
         public LoginWin logWin;
         public RankWindow rankWin;
         public GameOverWindow endWin;
-        public ProfileWindow profWin;
 
 
         // const values
@@ -609,9 +608,15 @@ namespace Saper.Windows
         {
             if (Properties.Settings.Default.logged)
             {
-                profWin = new ProfileWindow();
-                profWin.Owner = this;
-                profWin.ShowDialog();
+                Properties.Settings.Default.logged = false;
+                Properties.Settings.Default.remember = false;
+                Properties.Settings.Default.Id = 0;
+                Properties.Settings.Default.NickName = "";
+                Properties.Settings.Default.Token = "";
+                Properties.Settings.Default.Save();
+
+                user = null;
+                nickNameLabel.Content = "Guest";
             }
             else
             {
