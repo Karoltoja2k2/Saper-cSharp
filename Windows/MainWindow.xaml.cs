@@ -107,6 +107,7 @@ namespace Saper.Windows
             if (Properties.Settings.Default.logged)
             {
                 user = new UserAuthenticated(Properties.Settings.Default.Id, Properties.Settings.Default.NickName, Properties.Settings.Default.Token);
+                nickNameLabel.Content = user.NickName;
             }
             SizeChanged += Window_Size_Changed;
             Set_Level(level);
@@ -620,6 +621,7 @@ namespace Saper.Windows
                 if (Properties.Settings.Default.logged)
                 {
                     user = new UserAuthenticated(Properties.Settings.Default.Id, Properties.Settings.Default.NickName, Properties.Settings.Default.Token);
+                    nickNameLabel.Content = user.NickName;
                 }
             }
         }

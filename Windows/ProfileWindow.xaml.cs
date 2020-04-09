@@ -23,5 +23,21 @@ namespace Saper.Windows
         {
             InitializeComponent();
         }
+
+        public void logOffBtn(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.logged = false;
+            Properties.Settings.Default.remember = false;
+            Properties.Settings.Default.Id = 0;
+            Properties.Settings.Default.NickName = "";
+            Properties.Settings.Default.Token = "";
+
+            this.Close();
+        }
+
+        private void Drag_Window(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }

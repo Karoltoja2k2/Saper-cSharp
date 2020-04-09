@@ -5,8 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Saper.Windows"
         mc:Ignorable="d"
-        Title="ProfileWindow" Height="450" Width="800">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        FontSize="20"
+        FontFamily="Roboto"
+        WindowStartupLocation="CenterOwner"   
+        MouseLeftButtonDown="Drag_Window"
+        Title="Account" Height="400" Width="500">
+    <Window.Background>
+        <SolidColorBrush Color="Black" Opacity="0.7"/>
+    </Window.Background>
     <Grid>
-        
+        <Button Content="Sign out" Height="30" Click="logOffBtn"/>
     </Grid>
 </Window>

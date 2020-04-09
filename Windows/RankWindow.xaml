@@ -27,9 +27,9 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Button Click="Change_Cart" CommandParameter="1" Content="Easy  " Name="easyBtn"   Style="{DynamicResource menuButton}" Foreground="White" FontSize="22" Background="DarkRed" Opacity="0.9" Grid.Column="0" Margin="5" Width="100" DockPanel.Dock="Left"/>
-                <Button Click="Change_Cart" CommandParameter="2" Content="Medium" Name="mediumBtn" Style="{DynamicResource menuButton}" Foreground="White" FontSize="22" Background="Black"   Opacity="0.9" Grid.Column="1" Margin="5" Width="100" DockPanel.Dock="Left"/>
-                <Button Click="Change_Cart" CommandParameter="3" Content="Expert" Name="expertBtn" Style="{DynamicResource menuButton}" Foreground="White" FontSize="22" Background="Black"   Opacity="0.9" Grid.Column="2" Margin="5" Width="100" DockPanel.Dock="Left"/>
+                <Button Click="Change_Cart" CommandParameter="1" Content="Easy  " Name="easyBtn"   Style="{DynamicResource menuButton}" Foreground="DarkRed" FontSize="22" Background="Black" Opacity="0.9" Grid.Column="0" Margin="5" Width="100" DockPanel.Dock="Left"/>
+                <Button Click="Change_Cart" CommandParameter="2" Content="Medium" Name="mediumBtn" Style="{DynamicResource menuButton}" Foreground="White"   FontSize="22" Background="Black"   Opacity="0.9" Grid.Column="1" Margin="5" Width="100" DockPanel.Dock="Left"/>
+                <Button Click="Change_Cart" CommandParameter="3" Content="Expert" Name="expertBtn" Style="{DynamicResource menuButton}" Foreground="White"   FontSize="22" Background="Black"   Opacity="0.9" Grid.Column="2" Margin="5" Width="100" DockPanel.Dock="Left"/>
             </Grid>
 
             <StackPanel Grid.Row="1" Name="easyPanel">                
