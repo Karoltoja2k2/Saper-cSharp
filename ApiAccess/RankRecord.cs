@@ -8,7 +8,6 @@ namespace Saper.ApiAccess
 {
     public class RankRecord
     {
-        public UserAuthenticated User { get; set; }
         public string NickName { get; set; }
         public float Time { get; set; }
         public int Level { get; set; }
@@ -17,11 +16,12 @@ namespace Saper.ApiAccess
         {
         }
 
-        public RankRecord(UserAuthenticated user, float time, int level)
+        public RankRecord(string nickName, float time, int level)
         {
-            User = user;
+            NickName = nickName;
             Time = time;
             Level = level;
         }
+
     }
 }

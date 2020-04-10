@@ -65,7 +65,7 @@
             <Button Style="{DynamicResource menuButton}" Background="Green" Margin="5,5" Height="25" Width="60" Content="Easy" CommandParameter="1" Click="Change_Level" />
             <Button Style="{DynamicResource menuButton}" Background="Coral" Margin="5,5" Height="25" Width="60" Content="Medium" CommandParameter="2" Click="Change_Level" />
             <Button Style="{DynamicResource menuButton}" Background="Red" Margin="5,5" Height="25" Width="60" Content="Expert" CommandParameter="3" Click="Change_Level" />
-            <Button Width="100" Click="Button_Click"/>
+            <Button Width="100" Click="Button_Click" Content="Test button"/>
         </StackPanel>
 
         <Canvas Width="2" Background="#126748" Grid.Column="2" Grid.RowSpan="3" HorizontalAlignment="Left"/>

@@ -10,15 +10,20 @@ namespace Saper.ApiAccess
 {
     public class ApiRequests
     {
-
         public static readonly HttpClient client = HttpClientFactory.Create();
 
-        public static async Task<bool> Post_RankRecord(UserAuthenticated user, float Time, int Level)
+        static ApiRequests()
+        {            
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.Token))
+                client.DefaultRequestHeaders.Add("Auth-token", Properties.Settings.Default.Token);
+        }
+
+        public static async Task<bool> Post_RankRecord( string nickName, float Time, int Level)
         {
-            RankRecord newRecord = new RankRecord(user, Time, Level);
+            RankRecord newRecord = new RankRecord(nickName, Time, Level);
 
             var url = "https://localhost:44358/api/rank";
-            HttpResponseMessage httpResponse = await client.PostAsJsonAsync<RankRecord>(url, newRecord);
+            HttpResponseMessage httpResponse = await client.PostAsJsonAsync(url, newRecord);
             try { httpResponse.EnsureSuccessStatusCode(); }
             catch { return false; }
 
@@ -56,6 +61,21 @@ namespace Saper.ApiAccess
             var url = "https://localhost:44358/api/Account/register";
             try { return await client.PostAsJsonAsync<RegisterForm>(url, registerForm); }
             catch { return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable); }
+        }
+
+        public static async Task<HttpResponseMessage> TEST()
+        {
+            var url = "https://localhost:44358/api/Account/TEST";
+            try
+            {
+                var asd = new { value = 5, nick = "asdd" };
+                return await client.PostAsJsonAsync(url, asd);
+            }
+            catch
+            {
+                return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+            }
+
         }
     }
 }

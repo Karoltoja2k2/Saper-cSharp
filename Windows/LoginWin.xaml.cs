@@ -70,6 +70,7 @@ namespace Saper.Windows
             Properties.Settings.Default.Id = user.Id;
             Properties.Settings.Default.NickName = user.NickName;
             Properties.Settings.Default.Token = user.Token;
+            ApiRequests.client.DefaultRequestHeaders.Add("Auth-token", user.Token);
             if (remember)
             {                
                 Properties.Settings.Default.Save();

@@ -592,7 +592,7 @@ namespace Saper.Windows
             Start_Game();
             if (success && Properties.Settings.Default.logged)
             {
-                bool send = await ApiRequests.Post_RankRecord(user, totalTimeSec, level);
+                bool send = await ApiRequests.Post_RankRecord( user.NickName, totalTimeSec, level);
                 if (!send)
                 {
                     Connection_Error();
@@ -614,6 +614,7 @@ namespace Saper.Windows
                 Properties.Settings.Default.NickName = "";
                 Properties.Settings.Default.Token = "";
                 Properties.Settings.Default.Save();
+                ApiRequests.client.DefaultRequestHeaders.Remove("Auth-token");
 
                 user = null;
                 nickNameLabel.Content = "Guest";
@@ -759,7 +760,6 @@ namespace Saper.Windows
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(Properties.Settings.Default);
         }
     }
 
